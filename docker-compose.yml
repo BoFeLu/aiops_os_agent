@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  aiops-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aiops-agent
+    image: aiops-agent:latest
+    restart: unless-stopped
+    
+    environment:
+      - AGENT_NAME=aiops-agent-local
+      - ENVIRONMENT=development
+      - COLLECTION_INTERVAL=30
+      - LOG_LEVEL=DEBUG
+      - LOG_FORMAT=json
+      - METRICS_EXPORT_ENABLED=true
+      - ANOMALY_DETECTION_ENABLED=true
+      - CPU_THRESHOLD=80.0
+      - MEMORY_THRESHOLD=85.0
+      - DISK_THRESHOLD=90.0
+      - ALERT_ENABLED=true
+    
+    # Security configurations
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Volumes for persistence (optional)
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    
+    # Network
+    networks:
+      - aiops-network
+
+networks:
+  aiops-network:
+    driver: bridge
