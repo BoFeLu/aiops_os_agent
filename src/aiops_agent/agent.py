@@ -9,7 +9,7 @@ import sys
 from typing import Dict, Any, Optional
 import psutil
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from .config import AgentConfig
 from .metrics_collector import MetricsCollector
 from .anomaly_detector import AnomalyDetector
@@ -106,7 +106,7 @@ class AIOpsAgent:
         """
         try:
             # Add timestamp
-            metrics['timestamp'] = datetime.utcnow().isoformat()
+            metrics['timestamp'] = datetime.now(timezone.utc).isoformat()
             
             # Log metrics (can be extended to push to Prometheus, etc.)
             logger.info(f"Metrics exported: {json.dumps(metrics)}")

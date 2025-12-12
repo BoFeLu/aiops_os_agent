@@ -5,7 +5,7 @@ Alert management and notification module.
 import logging
 import json
 from typing import Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 import requests
 from .config import AgentConfig
 
@@ -40,7 +40,7 @@ class AlertManager:
             alert_data = {
                 'agent_name': self.config.agent_name,
                 'environment': self.config.environment,
-                'timestamp': datetime.utcnow().isoformat(),
+                'timestamp': datetime.now(timezone.utc).isoformat(),
                 'anomaly': anomaly
             }
             
