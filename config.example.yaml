@@ -1,0 +1,25 @@
+# Example configuration file for AIOps Agent
+# Copy this file and customize for your environment
+
+agent:
+  name: aiops-agent-prod
+  environment: production
+
+monitoring:
+  collection_interval: 60  # seconds
+  metrics_export_enabled: true
+
+anomaly_detection:
+  enabled: true
+  thresholds:
+    cpu: 80.0        # percent
+    memory: 85.0     # percent
+    disk: 90.0       # percent
+
+alerting:
+  enabled: true
+  webhook_url: ""  # Set your webhook URL here
+
+logging:
+  level: INFO      # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: json     # json or text

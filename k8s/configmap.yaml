@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aiops-agent-config
+  namespace: aiops
+  labels:
+    app: aiops-agent
+data:
+  AGENT_NAME: "aiops-agent-k8s"
+  ENVIRONMENT: "production"
+  COLLECTION_INTERVAL: "60"
+  LOG_LEVEL: "INFO"
+  LOG_FORMAT: "json"
+  METRICS_EXPORT_ENABLED: "true"
+  ANOMALY_DETECTION_ENABLED: "true"
+  CPU_THRESHOLD: "80.0"
+  MEMORY_THRESHOLD: "85.0"
+  DISK_THRESHOLD: "90.0"
+  ALERT_ENABLED: "true"
