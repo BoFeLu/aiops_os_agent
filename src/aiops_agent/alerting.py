@@ -65,7 +65,7 @@ class AlertManager:
             response = requests.post(
                 self.config.alert_webhook_url,
                 json=alert_data,
-                timeout=10,
+                timeout=self.config.alert_webhook_timeout,
                 headers={'Content-Type': 'application/json'}
             )
             response.raise_for_status()

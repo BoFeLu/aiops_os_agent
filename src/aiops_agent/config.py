@@ -29,6 +29,7 @@ class AgentConfig:
     # Alerting settings
     alert_enabled: bool = field(default_factory=lambda: os.getenv('ALERT_ENABLED', 'true').lower() == 'true')
     alert_webhook_url: Optional[str] = field(default_factory=lambda: os.getenv('ALERT_WEBHOOK_URL'))
+    alert_webhook_timeout: int = field(default_factory=lambda: int(os.getenv('ALERT_WEBHOOK_TIMEOUT', '10')))
     
     # Logging settings
     log_level: str = field(default_factory=lambda: os.getenv('LOG_LEVEL', 'INFO'))

@@ -74,8 +74,8 @@ class AIOpsAgent:
                 # Collect system metrics
                 metrics = self.metrics_collector.collect()
                 
-                # Log collected metrics
-                logger.debug(f"Collected metrics: {json.dumps(metrics, indent=2)}")
+                # Log collected metrics (compact format for performance)
+                logger.debug(f"Collected metrics: {json.dumps(metrics)}")
                 
                 # Detect anomalies
                 anomalies = self.anomaly_detector.detect(metrics)

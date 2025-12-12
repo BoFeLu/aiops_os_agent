@@ -97,6 +97,14 @@ The AIOps Agent can be configured through:
 - **Required**: No (but recommended for production)
 - **Security**: Should be stored in Kubernetes Secret
 
+#### ALERT_WEBHOOK_TIMEOUT
+- **Description**: Timeout for webhook HTTP requests (in seconds)
+- **Type**: Integer
+- **Default**: `10`
+- **Range**: `1` - `60`
+- **Example**: `15`
+- **Required**: No
+
 ### Logging Configuration
 
 #### LOG_LEVEL

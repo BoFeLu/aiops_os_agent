@@ -23,6 +23,7 @@ class MetricsCollector:
         """
         self.config = config
         self.start_time = time.time()
+        self.has_getloadavg = hasattr(psutil, 'getloadavg')
         logger.info("Metrics collector initialized")
     
     def collect(self) -> Dict[str, Any]:
@@ -35,13 +36,13 @@ class MetricsCollector:
         metrics = {}
         
         try:
-            # CPU metrics
-            cpu_percent = psutil.cpu_percent(interval=1)
+            # CPU metrics (use shorter interval to avoid blocking)
+            cpu_percent = psutil.cpu_percent(interval=0.1)
             cpu_count = psutil.cpu_count()
             metrics['cpu'] = {
                 'usage_percent': cpu_percent,
                 'count': cpu_count,
-                'per_cpu': psutil.cpu_percent(interval=1, percpu=True)
+                'per_cpu': psutil.cpu_percent(interval=0.1, percpu=True)
             }
             
             # Memory metrics
@@ -74,7 +75,7 @@ class MetricsCollector:
             # System info
             metrics['system'] = {
                 'uptime': time.time() - psutil.boot_time(),
-                'load_average': psutil.getloadavg() if hasattr(psutil, 'getloadavg') else None
+                'load_average': psutil.getloadavg() if self.has_getloadavg else None
             }
             
             logger.debug(f"Collected metrics for {self.config.agent_name}")
