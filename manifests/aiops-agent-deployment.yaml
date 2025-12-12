@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiops-agent
+  namespace: aiops
+  labels:
+    app: aiops-agent
+    version: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aiops-agent
+  template:
+    metadata:
+      labels:
+        app: aiops-agent
+        component: aiops
+    spec:
+      serviceAccountName: aiops-agent
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: aiops-agent
+        image: aiops-agent:dev
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          exec:
+            command:
+            - /app/health.sh
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+            - /app/health.sh
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        volumeMounts:
+        - name: aiops-storage
+          mountPath: /data
+        env:
+        - name: ENVIRONMENT
+          value: "development"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+      volumes:
+      - name: aiops-storage
+        persistentVolumeClaim:
+          claimName: aiops-data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aiops-agent-service
+  namespace: aiops
+  labels:
+    app: aiops-agent
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  selector:
+    app: aiops-agent
