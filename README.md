@@ -2,7 +2,7 @@
 
 [![CI/CD Pipeline](https://github.com/BoFeLu/aiops_os_agent/actions/workflows/ci-cd.yaml/badge.svg)](https://github.com/BoFeLu/aiops_os_agent/actions)
 [![Security Scan](https://img.shields.io/badge/security-hardened-green)](./docs/)
-[![Kubernetes](https://img.shields.io/badge/kubernetes-1.29-blue)](https://kubernetes.io/)
+[![Kubernetes](https://img.shields.io/badge/kubernetes-1.34.0-blue)](https://kubernetes.io/)
 [![ArgoCD](https://img.shields.io/badge/argocd-gitops-orange)](https://argoproj.github.io/argo-cd/)
 
 ## Descripción
@@ -15,11 +15,11 @@ Sistema AIOps (Artificial Intelligence for IT Operations) con infraestructura Ku
 ## Arquitectura
 
 ### Stack Tecnológico
-- **Kubernetes:** Minikube v1.37.0 (migración desde K3s)
-- **Observabilidad:** Prometheus + Grafana stack
+- **Kubernetes:** Minikube v1.37.0 con k8s v1.34.0 (migración desde K3s)
+- **Observabilidad:** Prometheus + Grafana stack enterprise
 - **CI/CD:** GitHub Actions + ArgoCD GitOps
-- **Seguridad:** RBAC, NetworkPolicies, PodSecurity Standards
-- **Automatización:** Scripts bash enterprise-ready
+- **Seguridad:** RBAC, NetworkPolicies, PodSecurity Standards restricted
+- **Automatización:** Scripts bash enterprise-ready con logging
 
 ### Componentes Principales
 ```
@@ -32,25 +32,33 @@ Sistema AIOps (Artificial Intelligence for IT Operations) con infraestructura Ku
 ## Estado del Proyecto
 
 ### ✅ Fase 1: Infraestructura Base (COMPLETADA)
-- Cluster Kubernetes hardened
-- Namespaces con security contexts
-- RBAC configurado
+- Cluster Kubernetes hardened con security contexts
+- Namespaces con Pod Security Standards restricted
+- RBAC configurado con principio mínimo privilegio
 
 ### ✅ Fase 2: Observabilidad Enterprise (COMPLETADA)  
-- Prometheus metrics collection
-- Grafana dashboards configurados
-- AlertManager integrado
+- Prometheus metrics collection con 26+ horas uptime
+- Grafana dashboards configurados (ver screenshots)
+- AlertManager integrado con notificaciones
 - 630+ heartbeats AIOps Agent documentados
 
 ### ✅ Fase 3: CI/CD GitOps (COMPLETADA)
-- GitHub Actions pipeline con security scanning
-- ArgoCD instalado y configurado
+- GitHub Actions pipeline con Trivy security scanning
+- ArgoCD instalado y configurado con auto-sync
 - Multi-environment deployments (staging/production)
-- Automated container builds y pushes
+- Automated container builds multi-platform (amd64/arm64)
 
 ### 🚀 Próximas Fases
 - **Fase 4:** Políticas seguridad avanzada (OPA/Gatekeeper)
 - **Fase 5:** Migración VM producción (K3s nativo)
+
+## Screenshots
+
+### Grafana Dashboard
+![Grafana Dashboard](docs/grafana-dashboard.png)
+
+### ArgoCD Applications
+![ArgoCD Apps](docs/argocd-applications.png)
 
 ## Inicio Rápido
 
@@ -83,25 +91,27 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 
 ### Accesos
 - **Prometheus:** http://localhost:9090
-- **Grafana:** http://localhost:3000 (admin/aiops123)
-- **ArgoCD:** https://localhost:8080 (admin/ver credentials.txt)
+- **Grafana:** http://localhost:3000 (credenciales en `scripts/argocd-credentials.txt`)
+- **ArgoCD:** https://localhost:8080 (credenciales en `scripts/argocd-credentials.txt`)
 
 ## Seguridad
 
 ### Hardening Implementado
 - PodSecurity Standards "restricted" enforced
-- NetworkPolicies restrictivas activas
+- NetworkPolicies restrictivas activas (4 políticas)
 - Security Contexts non-root obligatorios
 - Resource limits configurados
 - RBAC mínimo privilegio
 
-### Vulnerabilidades Gestionadas
-- CVE Scan: 496 críticas, 54 altas identificadas
-- Mitigaciones implementadas para desarrollo
-- Evaluación de riesgo: ACEPTABLE con controles
+### Gestión de Vulnerabilidades
+- **CVE Scan:** 496 críticas, 54 altas identificadas
+- **Mitigaciones:** Implementadas para entorno desarrollo
+- **Informe completo:** Ver [`docs/security-assessment.md`](./docs/)
+- **Evaluación de riesgo:** ACEPTABLE con controles implementados
 
 ## Documentación
 
+- [`docs/security-assessment.md`](./docs/) - Informe seguridad y mitigaciones
 - [`docs/1er-informe.docx`](./docs/) - Informe Fase 1
 - [`docs/2o-informe.docx`](./docs/) - Informe Fase 2  
 - [`informe-fase2`](./informe-fase2) - Documentación técnica Fase 2
@@ -111,46 +121,46 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 
 ### Gestión Cluster
 ```bash
-# Gestión completa K8s
+# Gestión completa K8s con logging
 ./scripts/aiops_k8s_manager_enhanced.sh
 
-# Hardening seguridad
+# Hardening seguridad enterprise
 ./scripts/harden_aiops_k8s.sh
 
-# Gestión imágenes  
+# Gestión imágenes Docker
 ./scripts/manage_aiops_images.sh
 
-# Setup ArgoCD
+# Setup ArgoCD con verificación
 ./scripts/setup-argocd.sh
 ```
 
 ## CI/CD Pipeline
 
 ### GitHub Actions
-- Security scanning (Trivy)
-- Multi-platform builds (amd64/arm64)
-- Automated deployments
-- Container registry (GitHub Container Registry)
+- **Security scanning:** Trivy filesystem y container scan
+- **Multi-platform builds:** amd64/arm64 con cache optimizado
+- **Automated deployments:** Staging (develop) y Production (main)
+- **Container registry:** GitHub Container Registry
 
 ### ArgoCD GitOps
-- Auto-sync habilitado
-- Multi-environment support
-- Self-healing deployments
-- RBAC integrado
+- **Auto-sync:** Habilitado con self-healing
+- **Multi-environment:** Support staging/production
+- **RBAC integrado:** Políticas granulares
+- **Rollback automático:** En caso de fallos
 
 ## Monitorización
 
 ### Métricas Clave
 - **AIOps Agent:** 630+ heartbeats documentados, 26+ horas uptime
-- **Prometheus:** Métricas cluster completas
-- **Grafana:** Dashboards enterprise configurados
-- **ArgoCD:** Deployment tracking automático
+- **Prometheus:** Métricas cluster completas con retention 15d
+- **Grafana:** Dashboards enterprise con alertas configuradas
+- **ArgoCD:** Deployment tracking automático con notificaciones
 
 ### Alerts Configuradas
-- Pod health checks
-- Resource utilization
-- Network connectivity
-- Security compliance
+- Pod health checks con threshold 90%
+- Resource utilization (CPU >80%, Memory >85%)
+- Network connectivity cross-namespace
+- Security compliance violations
 
 ## Contribución
 
@@ -160,7 +170,7 @@ Este proyecto forma parte del portfolio profesional para transición a trabajo i
 
 ## Licencia
 
-Proyecto académico - ASIR DevOps Specialization
+MIT License - Ver [LICENSE](LICENSE) para detalles
 
 ---
 
