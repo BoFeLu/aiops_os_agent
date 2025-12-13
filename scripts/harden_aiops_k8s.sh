@@ -43,7 +43,7 @@ check_prerequisites() {
     
     # Verify kubectl context
     local current_context
-    current_context=$(kubectl config current-context 2>/dev/null || echo "none")
+    current_context=$(kubectl config current-context)
     if [ "$current_context" != "minikube" ]; then
         error "kubectl context is not set to minikube. Current: $current_context"
         exit 1
