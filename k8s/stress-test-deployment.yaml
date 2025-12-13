@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stress-generator
+  namespace: stress-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stress-generator
+  template:
+    metadata:
+      labels:
+        app: stress-generator
+    spec:
+      containers:
+      - name: stress
+        image: busybox:1.35
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do wget -q --spider http://aiops-agent-service.aiops.svc.cluster.local:8080 || true; sleep 0.01; done"]
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 500m
+            memory: 128Mi

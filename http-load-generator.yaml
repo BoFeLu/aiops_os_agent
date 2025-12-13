@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-load-generator
+  namespace: stress-test
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: http-load
+  template:
+    metadata:
+      labels:
+        app: http-load
+    spec:
+      containers:
+      - name: load-gen
+        image: busybox:1.35
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do for i in $(seq 1 100); do wget -q --spider http://aiops-agent-service.aiops.svc.cluster.local:8080 &done; wait; sleep 1; done"]
+        resources:
+          requests:
+            cpu: 50m
+            memory: 32Mi
+          limits:
+            cpu: 200m
+            memory: 64Mi
