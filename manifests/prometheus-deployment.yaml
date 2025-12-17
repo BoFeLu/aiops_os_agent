@@ -26,6 +26,23 @@ data:
         replacement: $1:$2
         target_label: __address__
 ---
+# Persistent Volume Claim for Prometheus data (Zero-Loss requirement)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-data
+  namespace: monitoring
+  labels:
+    app: prometheus
+    component: storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -42,12 +59,29 @@ spec:
         app: prometheus
     spec:
       serviceAccountName: monitoring-admin
+      # Pod Security Context - Súmmum Standard Restricted
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534  # nobody user (Prometheus default)
+        fsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: prometheus
         image: prom/prometheus:v2.40.0
+        imagePullPolicy: IfNotPresent
         args: ['--config.file=/etc/prometheus/prometheus.yml', '--storage.tsdb.path=/prometheus', '--storage.tsdb.retention.time=7d']
         ports:
         - containerPort: 9090
+        # Container Security Context - Súmmum Standard Restricted
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: false  # Prometheus needs write access for TSDB
+          seccompProfile:
+            type: RuntimeDefault
         resources:
           requests: {memory: "256Mi", cpu: "100m"}
           limits: {memory: "512Mi", cpu: "200m"}
@@ -60,7 +94,8 @@ spec:
       - name: config
         configMap: {name: prometheus-config}
       - name: storage
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: prometheus-data
 ---
 apiVersion: v1
 kind: Service

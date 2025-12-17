@@ -88,7 +88,11 @@ enable_metrics_server() {
 apply_security_manifests() {
     log "Applying security manifests..."
     
-    local manifest_file="/home/claude/aiops-security-manifests.yaml"
+    # Get script directory and calculate relative path to manifests
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local manifest_file="${script_dir}/../manifests/aiops-security-manifests.yaml"
+    
     if [ ! -f "$manifest_file" ]; then
         error "Security manifest file not found: $manifest_file"
         exit 1
@@ -250,7 +254,8 @@ EOF
 generate_verification_report() {
     log "Generating verification report..."
     
-    local report_file="/home/aiops_user/aiops-hardening-report-$(date +%Y%m%d-%H%M%S).txt"
+    # Save report in current working directory
+    local report_file="aiops-hardening-report-$(date +%Y%m%d-%H%M%S).txt"
     
     cat > "$report_file" <<EOF
 AIOps Kubernetes Hardening Verification Report

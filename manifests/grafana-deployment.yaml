@@ -13,6 +13,23 @@ data:
       url: http://prometheus:9090
       isDefault: true
 ---
+# Persistent Volume Claim for Grafana data (Zero-Loss requirement)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-data
+  namespace: monitoring
+  labels:
+    app: grafana
+    component: storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: standard
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,11 +45,29 @@ spec:
       labels:
         app: grafana
     spec:
+      serviceAccountName: monitoring-admin
+      # Pod Security Context - Súmmum Standard Restricted
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 472  # grafana user (Grafana default)
+        fsGroup: 472
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: grafana
         image: grafana/grafana:9.3.0
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
+        # Container Security Context - Súmmum Standard Restricted
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: false  # Grafana needs write access for plugins and data
+          seccompProfile:
+            type: RuntimeDefault
         env:
         - name: GF_SECURITY_ADMIN_PASSWORD
           value: "aiops123"
@@ -48,7 +83,8 @@ spec:
       - name: grafana-datasources
         configMap: {name: grafana-datasources}
       - name: grafana-storage
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: grafana-data
 ---
 apiVersion: v1
 kind: Service

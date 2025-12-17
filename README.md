@@ -48,7 +48,7 @@ Sistema AIOps (Artificial Intelligence for IT Operations) con infraestructura Ku
 - Multi-environment deployments (staging/production)
 - Automated container builds multi-platform (amd64/arm64)
 
-### 🚀 Próximas Fases
+###  Próximas Fases
 - **Fase 4:** Políticas seguridad avanzada (OPA/Gatekeeper)
 - **Fase 5:** Migración VM producción (K3s nativo)
 
@@ -88,6 +88,22 @@ kubectl port-forward svc/prometheus -n monitoring 9090:9090
 kubectl port-forward svc/grafana -n monitoring 3000:3000  
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
+**LECCIONES APRENDIDAS sobre WSL2 y Kubernetes 1.32.0.Actualización de la sección de 'Instalación' y 'Problemas Conocidos':**
+**Asegúrate de que en Windows 11/WSL2 la versión recomendada es la 1.32.0 y que el uso de un usuario no-root es obligatorio para el hardening del sistema**
+
+## Especificaciones de Despliegue en Entornos Virtualizados (Windows 11 + WSL2)
+
+Debido a las particularidades de red y virtualización del driver de Docker en WSL2, se han establecido las siguientes directrices obligatorias para garantizar la estabilidad del API Server (puerto 8443).
+
+### Requisitos de Infraestructura Local
+* **Recursos Asignados:** Mínimo 2 vCPUs y 4096 MB de RAM. Configuraciones inferiores provocan el fallo de los probes de salud en el stack de observabilidad.
+* **Versión de Kubernetes:** Se establece la v1.32.0 como estándar de estabilidad para este entorno, evitando los timeouts de conectividad identificados en la v1.34.0.
+
+### Protocolo de Seguridad y Gestión (Hardening)
+* **Gestión de Privilegios:** Queda estrictamente prohibida la ejecución de Minikube bajo el usuario `root`. Se ha implementado el usuario dedicado `aiops_user` para todas las operaciones del clúster.
+* **Identificación de Errores (Troubleshooting):**
+    * `DRV_AS_ROOT`: Error de seguridad por ejecución con privilegios de superusuario. Solución: `su - aiops_user`.
+    * `K8S_APISERVER_MISSING`: Fallo crítico de conectividad con el control plane. Solución: Verificación de recursos y downgrade a v1.32.0.
 
 ### Accesos
 - **Prometheus:** http://localhost:9090

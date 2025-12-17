@@ -18,11 +18,14 @@ spec:
         component: aiops
     spec:
       serviceAccountName: aiops-agent
+      # Pod Security Context - Súmmum Standard Restricted
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: aiops-agent
         image: aiops-agent:dev
@@ -30,6 +33,15 @@ spec:
         ports:
         - containerPort: 8080
           name: http
+        # Container Security Context - Súmmum Standard Restricted
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: false  # Agent needs write access for data storage
+          seccompProfile:
+            type: RuntimeDefault
         resources:
           requests:
             memory: "128Mi"
