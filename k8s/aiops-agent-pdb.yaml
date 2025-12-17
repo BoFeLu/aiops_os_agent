@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: aiops-agent-pdb
+  namespace: aiops
+spec:
+  selector:
+    matchLabels:
+      app: aiops-agent
+  maxUnavailable: 1
+  unhealthyPodEvictionPolicy: AlwaysAllow

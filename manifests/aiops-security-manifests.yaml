@@ -1,0 +1,190 @@
+# AIOps Security Manifests - Hardened Configuration
+# Author: Alberto (aiops_user)
+# Date: 11 Dec 2025
+# Purpose: Security baseline for AIOps OS Agent project
+
+---
+# 1. Dedicated Namespace for AIOps
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aiops
+  labels:
+    name: aiops
+    purpose: "ai-operations-agent"
+    security.level: "restricted"
+
+---
+# 2. Service Account with Minimal Privileges
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: aiops-agent
+  namespace: aiops
+  labels:
+    app: aiops-agent
+    component: service-account
+
+---
+# 3. Role with Minimal Required Permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: aiops-agent-role
+  namespace: aiops
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "endpoints", "configmaps"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["create", "patch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch"]
+
+---
+# 4. RoleBinding - Link ServiceAccount to Role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: aiops-agent-binding
+  namespace: aiops
+subjects:
+- kind: ServiceAccount
+  name: aiops-agent
+  namespace: aiops
+roleRef:
+  kind: Role
+  name: aiops-agent-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# 5. Default Deny All Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: aiops
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+
+---
+# 6. Allow DNS Resolution
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: aiops
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    - podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+
+---
+# 7. Allow AIOps Agent Internal Communication
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-aiops-internal
+  namespace: aiops
+spec:
+  podSelector:
+    matchLabels:
+      app: aiops-agent
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          component: aiops
+    ports:
+    - protocol: TCP
+      port: 8080
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          component: aiops
+    ports:
+    - protocol: TCP
+      port: 8080
+
+---
+# 8. Persistent Volume Claim for AIOps Data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: aiops-data
+  namespace: aiops
+  labels:
+    app: aiops-agent
+    component: storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: standard
+
+---
+# 9. Test Pod for Persistence Verification
+apiVersion: v1
+kind: Pod
+metadata:
+  name: storage-test
+  namespace: aiops
+  labels:
+    app: storage-test
+    component: verification
+spec:
+  serviceAccountName: aiops-agent
+  containers:
+  - name: test-container
+    image: alpine:latest
+    command: 
+    - /bin/sh
+    - -c
+    - |
+      echo "Persistence test started at $(date)" > /data/test-file.txt
+      echo "Writing test data..."
+      for i in $(seq 1 100); do
+        echo "Test entry $i: $(date)" >> /data/test-file.txt
+        sleep 1
+      done
+      echo "Test completed. Data written to /data/test-file.txt"
+      tail -f /dev/null
+    volumeMounts:
+    - name: test-storage
+      mountPath: /data
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "100m"
+      limits:
+        memory: "128Mi"
+        cpu: "200m"
+  volumes:
+  - name: test-storage
+    persistentVolumeClaim:
+      claimName: aiops-data
+  restartPolicy: Always

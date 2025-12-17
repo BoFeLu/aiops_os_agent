@@ -1,228 +1,188 @@
+# AIOps OS Agent - Enterprise Kubernetes Infrastructure
 
-# AIOps OS Agent - Enterprise K3s Infrastructure
-
-[![Infrastructure Status](https://img.shields.io/badge/infrastructure-enterprise--ready-brightgreen)](./docs/reports/)
-[![Kubernetes K3s](https://img.shields.io/badge/k3s-v1.33.6-blue)](https://k3s.io/)
-[![Security Posture](https://img.shields.io/badge/security-hardened-green)](./docs/reports/)
-[![Documentation](https://img.shields.io/badge/docs-executive--level-orange)](./docs/reports/FINAL-Informe_K3s_Enterprise_CORREGIDO.md)
-
-## Índice
-
-- [Descripción](#descripción)
-- [Migración enterprise Minikube → K3s](#migración-enterprise-minikube--k3s)
-- [Arquitectura enterprise](#arquitectura-enterprise)
-- [Documentación ejecutiva](#documentación-ejecutiva)
-- [Estado del proyecto](#estado-del-proyecto)
-- [Instalación y despliegue](#instalación-y-despliegue)
-- [Evidencia técnica](#evidencia-técnica)
-- [Security posture](#security-posture)
-- [Exposición de competencias](#exposición-de-competencias)
-- [Portfolio profesional](#portfolio-profesional)
-
----
+[![CI/CD Pipeline](https://github.com/BoFeLu/aiops_os_agent/actions/workflows/ci-cd.yaml/badge.svg)](https://github.com/BoFeLu/aiops_os_agent/actions)
+[![Security Scan](https://img.shields.io/badge/security-hardened-green)](./docs/)
+[![Kubernetes](https://img.shields.io/badge/kubernetes-1.34.0-blue)](https://kubernetes.io/)
+[![ArgoCD](https://img.shields.io/badge/argocd-gitops-orange)](https://argoproj.github.io/argo-cd/)
 
 ## Descripción
 
-Sistema AIOps (Artificial Intelligence for IT Operations) con **infraestructura K3s enterprise** completamente migrada y validada. Proyecto que demuestra competencias de **Infrastructure Architect** con stack completo de observabilidad, seguridad y automatización.
+Sistema AIOps (Artificial Intelligence for IT Operations) con infraestructura Kubernetes enterprise-grade, observabilidad completa y automatización CI/CD GitOps.
 
-**Desarrollado por:** Alberto (BoFeLu) - Infrastructure Architect / DevOps  
-**Proyecto:** ASIR Final - Transición a Independent Researcher-Architect-Developer  
-**Estado:** **MIGRACIÓN K3S ENTERPRISE COMPLETADA CON ÉXITO**
+**Desarrollado por:** Alberto (BoFeLu) - DevOps Engineer  
+**Proyecto:** ASIR Final - Transición a Independent Researcher-Architect-Developer
 
-## Migración enterprise Minikube → K3s
+## Arquitectura
 
-### Resultados de la migración
-
-- Incremento memoria: +400% (9.6GB vs 2GB)
-- Performance: containerd nativo (elimina Docker-in-Docker)
-- Escalabilidad: multi-node ready, service mesh prepared
-- Troubleshooting: 15+ incidencias críticas resueltas
-- Documentación: evidencia técnica completa con capturas
-
-### Informe ejecutivo completo
-
-**[Ver informe ejecutivo K3s enterprise](./docs/reports/FINAL-Informe_K3s_Enterprise_CORREGIDO.md)**
-- 25+ páginas de documentación profesional
-- 13 capturas técnicas con evidencia visual
-- Benchmarking comparativo completo
-- Security posture enterprise
-- Roadmap estratégico Q1-Q4 2026
-
-## Arquitectura enterprise
-
-### Stack tecnológico actual
-```
-┌─────────────────────────────────────────┐
-│                 Git                     │
-│                  ↓                      │
-│    ┌─────────┐  ┌─────────┐  ┌─────────┐│
-│    │   K3s   │→ Prometheus│→ │Grafana  ││
-│    └─────────┘  └─────────┘  └─────────┘│
-│         ↓                               │
-│    ┌────────────────────────────────────┤
-│    │            ArgoCD                  │
-│    └────────────────────────────────────┤
-└─────────────────────────────────────────┘
-```
-
-### Especificaciones
-
-- **Kubernetes:** K3s v1.33.6+k3s1 (migrado desde Minikube)
-- **Runtime:** containerd 2.1.5-k3s1.33 nativo
-- **CNI:** Flannel VXLAN enterprise
+### Stack Tecnológico
+- **Kubernetes:** Minikube v1.37.0 con k8s v1.34.0 (migración desde K3s)
 - **Observabilidad:** Prometheus + Grafana stack enterprise
-- **GitOps:** ArgoCD con troubleshooting completo documentado
-- **Seguridad:** RBAC granular, NetworkPolicies, PodSecurity Standards
-- **Plataforma:** VM Ubuntu 24.04 LTS enterprise
+- **CI/CD:** GitHub Actions + ArgoCD GitOps
+- **Seguridad:** RBAC, NetworkPolicies, PodSecurity Standards restricted
+- **Automatización:** Scripts bash enterprise-ready con logging
 
-## Documentación ejecutiva
+### Componentes Principales
+```
+├── AIOps Agent (namespace: aiops)
+├── Observability Stack (namespace: monitoring)  
+├── ArgoCD GitOps (namespace: argocd)
+└── CI/CD Pipeline (GitHub Actions)
+```
 
-### Informes principales
+## Estado del Proyecto
 
-| Documento | Descripción | Estado |
-|-----------|-------------|---------|
-| **[Informe K3s enterprise](./docs/reports/FINAL-Informe_K3s_Enterprise_CORREGIDO.md)** | **Migración completa Minikube→K3s** | COMPLETADO |
-| [Security assessment](./docs/security-assessment.md) | Análisis vulnerabilidades y mitigaciones | Completado |
-| [Fase 1: infraestructura](./docs/1er-informe.docx) | Base Kubernetes hardened | Completado |
-| [Fase 2: observabilidad](./docs/2o-informe.docx) | Prometheus + Grafana enterprise | Completado |
-
-### Evidencia técnica
-
-- 13 capturas técnicas con troubleshooting ArgoCD
-- Benchmarking comparativo Minikube vs K3s
-- Security posture completo con RBAC y NetworkPolicies
-- Comandos de validación y YAMLs enterprise
-
-## Estado del proyecto
-
-### FASE ENTERPRISE: Migración K3s (COMPLETADA)
-- **Migración exitosa** Minikube → K3s nativo
-- **Stack enterprise operativo:** Prometheus + Grafana + ArgoCD
-- **Troubleshooting completo:** 15+ problemas críticos resueltos
-- **Documentación ejecutiva:** informe 25+ páginas con evidencia visual
-- **Performance:** +400% incremento memoria, containerd nativo
-
-### Fase 1-3: infraestructura, observabilidad, CI/CD (COMPLETADAS)
+### ✅ Fase 1: Infraestructura Base (COMPLETADA)
 - Cluster Kubernetes hardened con security contexts
-- Prometheus metrics collection con 26+ horas uptime  
-- GitHub Actions pipeline con security scanning
-- ArgoCD GitOps configurado y validado
+- Namespaces con Pod Security Standards restricted
+- RBAC configurado con principio mínimo privilegio
 
-### Roadmap estratégico 2026
+### ✅ Fase 2: Observabilidad Enterprise (COMPLETADA)  
+- Prometheus metrics collection con 26+ horas uptime
+- Grafana dashboards configurados (ver screenshots)
+- AlertManager integrado con notificaciones
+- 630+ heartbeats AIOps Agent documentados
 
-- **Q1 2026:** application rebuilding (HPA, PodDisruptionBudgets)
-- **Q2 2026:** security & governance (SealedSecrets, OPA/Gatekeeper, Falco)
-- **Q3-Q4 2026:** service mesh & multi-node (Istio, chaos engineering)
+### ✅ Fase 3: CI/CD GitOps (COMPLETADA)
+- GitHub Actions pipeline con Trivy security scanning
+- ArgoCD instalado y configurado con auto-sync
+- Multi-environment deployments (staging/production)
+- Automated container builds multi-platform (amd64/arm64)
 
-## Instalación y despliegue
+###  Próximas Fases
+- **Fase 4:** Políticas seguridad avanzada (OPA/Gatekeeper)
+- **Fase 5:** Migración VM producción (K3s nativo)
 
-### Prerequisitos enterprise
+## Screenshots
 
-- **K3s v1.33.6+** 
-- **kubectl** configurado
-- **VM Ubuntu 24.04 LTS**
-- **Git** y acceso al repositorio
+### Grafana Dashboard
+![Grafana Dashboard](docs/grafana-dashboard.png)
 
-### Instalación K3s stack
+### ArgoCD Applications
+![ArgoCD Apps](docs/argocd-applications.png)
+
+## Inicio Rápido
+
+### Prerequisitos
+- Minikube v1.37.0+
+- kubectl configurado
+- Docker Desktop
+- Git
+
+### Instalación
 ```bash
 # Clonar repositorio
 git clone https://github.com/BoFeLu/aiops_os_agent.git
 cd aiops_os_agent
 
-# Instalación K3s enterprise
-curl -sfL https://get.k3s.io | sh -
-sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+# Iniciar Minikube
+minikube start
 
-# Desplegar stack enterprise
-kubectl apply -f k8s/
+# Desplegar infraestructura
 kubectl apply -f manifests/
 
-# Setup ArgoCD (con troubleshooting documentado)
+# Instalar ArgoCD
+./scripts/setup-argocd.sh
+
+# Acceso a servicios
+kubectl port-forward svc/prometheus -n monitoring 9090:9090
+kubectl port-forward svc/grafana -n monitoring 3000:3000  
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
+**LECCIONES APRENDIDAS sobre WSL2 y Kubernetes 1.32.0.Actualización de la sección de 'Instalación' y 'Problemas Conocidos':**
+**Asegúrate de que en Windows 11/WSL2 la versión recomendada es la 1.32.0 y que el uso de un usuario no-root es obligatorio para el hardening del sistema**
+
+## Especificaciones de Despliegue en Entornos Virtualizados (Windows 11 + WSL2)
+
+Debido a las particularidades de red y virtualización del driver de Docker en WSL2, se han establecido las siguientes directrices obligatorias para garantizar la estabilidad del API Server (puerto 8443).
+
+### Requisitos de Infraestructura Local
+* **Recursos Asignados:** Mínimo 2 vCPUs y 4096 MB de RAM. Configuraciones inferiores provocan el fallo de los probes de salud en el stack de observabilidad.
+* **Versión de Kubernetes:** Se establece la v1.32.0 como estándar de estabilidad para este entorno, evitando los timeouts de conectividad identificados en la v1.34.0.
+
+### Protocolo de Seguridad y Gestión (Hardening)
+* **Gestión de Privilegios:** Queda estrictamente prohibida la ejecución de Minikube bajo el usuario `root`. Se ha implementado el usuario dedicado `aiops_user` para todas las operaciones del clúster.
+* **Identificación de Errores (Troubleshooting):**
+    * `DRV_AS_ROOT`: Error de seguridad por ejecución con privilegios de superusuario. Solución: `su - aiops_user`.
+    * `K8S_APISERVER_MISSING`: Fallo crítico de conectividad con el control plane. Solución: Verificación de recursos y downgrade a v1.32.0.
+
+### Accesos
+- **Prometheus:** http://localhost:9090
+- **Grafana:** http://localhost:3000 (credenciales en `scripts/argocd-credentials.txt`)
+- **ArgoCD:** https://localhost:8080 (credenciales en `scripts/argocd-credentials.txt`)
+
+## Seguridad
+
+### Hardening Implementado
+- PodSecurity Standards "restricted" enforced
+- NetworkPolicies restrictivas activas (4 políticas)
+- Security Contexts non-root obligatorios
+- Resource limits configurados
+- RBAC mínimo privilegio
+
+### Gestión de Vulnerabilidades
+- **CVE Scan:** 496 críticas, 54 altas identificadas
+- **Mitigaciones:** Implementadas para entorno desarrollo
+- **Informe completo:** Ver [`docs/security-assessment.md`](./docs/)
+- **Evaluación de riesgo:** ACEPTABLE con controles implementados
+
+## Documentación
+
+- [`docs/security-assessment.md`](./docs/) - Informe seguridad y mitigaciones
+- [`docs/1er-informe.docx`](./docs/) - Informe Fase 1
+- [`docs/2o-informe.docx`](./docs/) - Informe Fase 2  
+- [`informe-fase2`](./informe-fase2) - Documentación técnica Fase 2
+- [`INFORME BRUTAL Y DIVERTIDO.docx`](.) - Informe completo proyecto
+
+## Scripts Automatización
+
+### Gestión Cluster
+```bash
+# Gestión completa K8s con logging
+./scripts/aiops_k8s_manager_enhanced.sh
+
+# Hardening seguridad enterprise
+./scripts/harden_aiops_k8s.sh
+
+# Gestión imágenes Docker
+./scripts/manage_aiops_images.sh
+
+# Setup ArgoCD con verificación
 ./scripts/setup-argocd.sh
 ```
 
-### Accesos validados
-```bash
-# Port-forward enterprise (concurrente y estable)
-kubectl port-forward svc/prometheus -n monitoring 9090:9090 &
-kubectl port-forward svc/grafana -n monitoring 3000:3000 &  
-kubectl port-forward svc/argocd-server -n argocd 8080:80 &
-```
+## CI/CD Pipeline
 
-- **Prometheus:** http://localhost:9090
-- **Grafana:** http://localhost:3000
-- **ArgoCD:** http://localhost:8080
+### GitHub Actions
+- **Security scanning:** Trivy filesystem y container scan
+- **Multi-platform builds:** amd64/arm64 con cache optimizado
+- **Automated deployments:** Staging (develop) y Production (main)
+- **Container registry:** GitHub Container Registry
 
-## Evidencia técnica
+### ArgoCD GitOps
+- **Auto-sync:** Habilitado con self-healing
+- **Multi-environment:** Support staging/production
+- **RBAC integrado:** Políticas granulares
+- **Rollback automático:** En caso de fallos
 
-### Capturas documentadas
+## Monitorización
 
-| Evidencia | Descripción |
-|-----------|-------------|
-| **Troubleshooting ArgoCD** | RBAC y secrets resolution completo |
-| **Estado pods recovery** | CreateContainerConfigError → Running |
-| **ArgoCD UI operativa** | "ArgoCD K3s Enterprise Ready" |
-| **Grafana dashboard** | "Welcome to Grafana" accesible |
-| **Prometheus interface** | Query interface operativa |
+### Métricas Clave
+- **AIOps Agent:** 630+ heartbeats documentados, 26+ horas uptime
+- **Prometheus:** Métricas cluster completas con retention 15d
+- **Grafana:** Dashboards enterprise con alertas configuradas
+- **ArgoCD:** Deployment tracking automático con notificaciones
 
-Ver todas las capturas en: [informe ejecutivo](./docs/reports/FINAL-Informe_K3s_Enterprise_CORREGIDO.md)
-
-## Security posture
-
-### Hardening implementado
-
-- **RBAC granular:** ServiceAccounts específicos por aplicación
-- **NetworkPolicies:** microsegmentación implementada
-- **PodSecurity Standards:** "restricted" enforced
-- **Secret management:** Kubernetes secrets con rotation capability
-- **Security contexts:** non-root obligatorios
-
-### Compliance enterprise
-
-- RBAC granular: least privilege implementado
-- Network segmentation: namespaces aislados
-- Audit logging: K3s audit logs habilitados
-- En progreso: SealedSecrets, OPA/Gatekeeper
-- Planificado: Falco runtime security, Vault integration
-
-## Exposición de competencias
-
-### Architecture & platform engineering
-- **Migración completa** de plataforma enterprise
-- **Infrastructure design** cloud-native
-- **Performance optimization** systemd integration
-
-### DevOps & operational excellence  
-- **Troubleshooting sistemático** multi-capa
-- **Root cause analysis** metodológico
-- **Documentation excellence** auditabilidad enterprise
-
-### Enterprise security & governance
-- **RBAC implementation** granular
-- **Secret management** lifecycle
-- **Enterprise standards** compliance
-
-## Portfolio profesional
-
-Este proyecto forma parte del **portfolio para transición a Infrastructure Architect** con evidencia completa de:
-
-### Logros técnicos validados
-- **Migración platform** exitosa con documentación ejecutiva
-- **Performance enterprise** +400% incremento recursos
-- **Stack operativo** completo con evidencia visual
-- **Metodología rigurosa** sistemática documentada
-
-### Valor empresarial
-- **Competencias** Infrastructure Architect demostradas
-- **Portfolio professional** evidencia técnica completa  
-- **Roadmap estratégico** evolución enterprise
-- **Preparación roles** DevOps organizaciones
-
----
+### Alerts Configuradas
+- Pod health checks con threshold 90%
+- Resource utilization (CPU >80%, Memory >85%)
+- Network connectivity cross-namespace
+- Security compliance violations
 
 ## Contribución
 
-**Metodología:** documentación exhaustiva, verificación paso a paso, enterprise-ready standards.
+Este proyecto forma parte del portfolio profesional para transición a trabajo independiente en DevOps y AI Infrastructure.
+
+**Metodología:** Documentación exhaustiva, verificación paso a paso, enterprise-ready standards.
 
 ## Licencia
 
@@ -230,6 +190,6 @@ MIT License - Ver [LICENSE](LICENSE) para detalles
 
 ---
 
-**Alberto (BoFeLu)** - Infrastructure Architect / DevOps  
-[GitHub](https://github.com/BoFeLu) | [Portfolio](https://github.com/BoFeLu?tab=repositories)  
-**MIGRACIÓN K3S ENTERPRISE COMPLETADA CON ÉXITO**
+**Alberto (BoFeLu)** - DevOps Engineer  
+📧 [Contacto via GitHub](https://github.com/BoFeLu)  
+🔗 [Portfolio Projects](https://github.com/BoFeLu?tab=repositories)

@@ -1,0 +1,10 @@
+apiVersion: config.gatekeeper.sh/v1alpha1
+kind: K8sRequiredSecurityContext
+metadata:
+  name: require-security-context-aiops
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces: ["aiops", "monitoring"]
