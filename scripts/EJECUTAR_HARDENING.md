@@ -144,3 +144,5 @@ ls manifests/aiops-security-manifests.yaml
 
 El script está diseñado para ejecutarse en entornos Linux/WSL. Si prefieres usar PowerShell nativo, sería necesario convertir el script a PowerShell (.ps1) o usar bash a través de Git Bash/WSL.
 
+
+

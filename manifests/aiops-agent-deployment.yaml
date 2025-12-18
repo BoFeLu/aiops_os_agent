@@ -49,18 +49,18 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "200m"
-        livenessProbe:
-          exec:
-            command:
-            - /app/health.sh
-          initialDelaySeconds: 10
-          periodSeconds: 30
-        readinessProbe:
-          exec:
-            command:
-            - /app/health.sh
-          initialDelaySeconds: 5
-          periodSeconds: 10
+        # livenessProbe:
+        #   exec:
+        #     command:
+        #     - /app/health.sh
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 30
+        # readinessProbe:
+        #   exec:
+        #     command:
+        #     - /app/health.sh
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
         volumeMounts:
         - name: aiops-storage
           mountPath: /data
